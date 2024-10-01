@@ -6,6 +6,7 @@ const { getBooks, getBookById, createBook, postWhatsapp,postImageFromUrl } = req
 router.get('/books', getBooks);
 router.get('/books/:id', getBookById);
 router.post('/books', createBook);
+router.post('/send-pdf', postPdfMessage);
 
 
 const initializeRoutes = (client) => {
