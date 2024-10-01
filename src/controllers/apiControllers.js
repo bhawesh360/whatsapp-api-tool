@@ -40,3 +40,16 @@ exports.postWhatsapp = async (req, res, client) => {
   
 
 }
+exports.postImageFromUrl = (req, res) => {
+  res.status(201).json({message:'Post image'});
+}
+
+
+
+
+
+
+
+
+
+  
