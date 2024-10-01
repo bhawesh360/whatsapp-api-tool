@@ -1,11 +1,17 @@
 const express = require('express');
 const path = require('path');
-const apiRoutes = require('./src/api/routes/apiRoutes');
-const webRoutes = require('./src/web/routes/webRoutes');
 const errorHandler = require('./src/middleware/errorHandler');
 
 const { Client, LocalAuth,MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+
+// Initialize WhatsApp client
+const client = new Client({
+  authStrategy: new LocalAuth({
+    dataPath:'./src/storage/auth'
+  })
+
+});
 
 
 const app = express();
@@ -17,19 +23,18 @@ app.set('views', path.join(__dirname, 'src/views'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'src/public')));
 
+const apiRoutes = require('./src/api/routes/apiRoutes')(client);
+const webRoutes = require('./src/web/routes/webRoutes');
+
+
 app.use('/api', apiRoutes);
 app.use('/', webRoutes);
 
 app.use(errorHandler);
 
 
-// Initialize WhatsApp client
-const client = new Client({
-  authStrategy: new LocalAuth({
-    dataPath:'./src/storage/auth'
-  })
 
-});
+
 
 client.on('qr', (qr) => {
   qrcode.generate(qr, { small: true });
