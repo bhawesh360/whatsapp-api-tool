@@ -6,13 +6,18 @@ const { getBooks, getBookById, createBook, postWhatsapp,postImageFromUrl } = req
 router.get('/books', getBooks);
 router.get('/books/:id', getBookById);
 router.post('/books', createBook);
-router.post('/send-image-from-url',postImageFromUrl);
+
 
 const initializeRoutes = (client) => {
     
     router.post('/send-mytext', (req, res) => postWhatsapp(req, res, client));
+    router.post('/send-image-from-url', (req, res) => postImageFromUrl(req, res, client));
+
     
     return router;
 };
+
+
+
 
 module.exports = initializeRoutes;
