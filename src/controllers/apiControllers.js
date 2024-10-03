@@ -1,4 +1,5 @@
 const Book = require('../models/book');
+const { MessageMedia } = require('whatsapp-web.js');
 
 exports.getBooks = (req, res) => {
   const books = Book.getAll();
@@ -40,3 +41,32 @@ exports.postWhatsapp = async (req, res, client) => {
   
 
 }
+exports.postImageFromUrl = async (req, res,client) => {
+
+  const { number, message } = req.body;
+  
+    try {
+      const chatId = number.includes('@c.us') ? number : `${number}@c.us`;
+  
+       
+        const media = await MessageMedia.fromUrl(message); // Use MessageMedia.fromUrl for URLs
+        await client.sendMessage(chatId, media);
+     
+  
+      res.status(200).json({ status: 'success', message: 'Message sent' });
+    } catch (error) {
+      res.status(500).json({ status: 'error', message: error.message });
+    }
+  };
+  
+
+
+
+
+
+
+
+
+
+
+  
