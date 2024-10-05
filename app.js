@@ -1,6 +1,10 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
+
+
 const errorHandler = require('./src/middleware/errorHandler');
+
 
 const { Client, LocalAuth,MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
@@ -23,7 +27,19 @@ app.set('views', path.join(__dirname, 'src/views'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'src/public')));
 
-const apiRoutes = require('./src/api/routes/apiRoutes')(client);
+// Configure multer for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'src/uploads/') // Make sure this folder exists
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)) // Appending extension
+  }
+});
+
+const upload = multer({ storage: storage });
+
+const apiRoutes = require('./src/api/routes/apiRoutes')(client,upload);
 const webRoutes = require('./src/web/routes/webRoutes');
 
 
@@ -56,3 +72,4 @@ client.initialize();
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
